@@ -1,0 +1,6 @@
+{
+  "packs": [
+    "skHype-pack.json"
+  ],
+  "homeserver_url": "https://matrix.org"
+}
