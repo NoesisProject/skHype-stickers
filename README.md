@@ -9,6 +9,13 @@ After the announcement of Skype shutting down, it seemed fitting to bring back s
 
 ---
 
+## Known Issues
+
+Animated stickers are not animated in the chat for now.  
+It's normal, I'm aware of it.  Still knitting on that one.
+
+---
+
 ## Disclaimer
 This project is a personal, experimental initiative and is **not affiliated with, endorsed by, or connected to [Microsoft](https://www.microsoft.com), [Skype](https://www.skype.com), or any related entities**.
 
