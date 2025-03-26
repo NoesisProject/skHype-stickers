@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copier /addwidget</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #1e1e1e;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    img {
+      max-width: 200px;
+      width: 60%;
+      height: auto;
+      margin-bottom: 30px;
+    }
+
+    button {
+      padding: 15px 25px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    button:active {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <img src="https://raw.githubusercontent.com/NoesisProject/skHype-stickers/main/web/sticker/skHype-pack/1f4a9.gif" alt="Sticker">
+  
+  <button onclick="copierTexte()">📋 Copier le lien du widget</button>
+
+  <script>
+    function copierTexte() {
+      const texte = "/addwidget https://noesisproject.github.io/skHype-stickers/web/index.html";
+      navigator.clipboard.writeText(texte).then(() => {
+        alert("Lien copié dans le presse-papier !");
+      }).catch(err => {
+        alert("Erreur lors de la copie : " + err);
+      });
+    }
+  </script>
+</body>
+</html>
+ 
