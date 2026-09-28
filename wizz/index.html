@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Wizz Test</title>
+  <link rel="stylesheet" href="./wizz.css">
+  <script src="./wizz.js" defer></script>
+</head>
+<body>
+  <main id="wizz-card" class="card">
+    <div class="bolt" aria-hidden="true">⚡</div>
+    <h1>Wizz Test</h1>
+    <p id="connection-status" class="status">Chargement du widget…</p>
+
+    <button id="wizz-button" type="button">Tester le Wizz</button>
+
+    <div class="checks">
+      <div>Widget intégré : <strong id="embedded-check">…</strong></div>
+      <div>Vibration API : <strong id="vibration-check">…</strong></div>
+      <div>Messages Element : <strong id="matrix-check">en attente</strong></div>
+    </div>
+
+    <pre id="log" aria-live="polite"></pre>
+  </main>
+</body>
+</html>
