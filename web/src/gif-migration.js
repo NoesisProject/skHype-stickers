@@ -1,5 +1,5 @@
 import { html, Component } from "../lib/htm/preact.js";
-import * as widgetAPI from "./widget-api.js?v=20260929-gif-migration-v2";
+import * as widgetAPI from "./widget-api.js?v=20260929-animated-pack-v4";
 
 const STORAGE_KEY = "skHypeGifMigrationV1";
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
