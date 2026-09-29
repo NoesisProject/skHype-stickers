@@ -20,7 +20,8 @@ import { html, render, Component } from "../lib/htm/preact.js";
 import { Spinner } from "./spinner.js";
 import { SearchBox } from "./search-box.js";
 import { giphyIsEnabled, GiphySearchTab, setGiphyAPIKey } from "./giphy.js";
-import * as widgetAPI from "./widget-api.js?v=20260929-animated-octopus-v2";
+import * as widgetAPI from "./widget-api.js?v=20260929-gif-migration-v1";
+import { GifMigrationPanel } from "./gif-migration.js?v=20260929-gif-migration-v1";
 import * as frequent from "./frequently-used.js";
 
 // Le "base URL" des packs. On charge d'abord packs/index.json, puis
@@ -28,7 +29,7 @@ import * as frequent from "./frequently-used.js";
 const PACKS_BASE_URL = "packs";
 
 // On récupère param "?config=" ou par défaut "packs/index.json"
-let INDEX = `${PACKS_BASE_URL}/index.json?v=20260929-animated-octopus-v2`;
+let INDEX = `${PACKS_BASE_URL}/index.json?v=20260929-gif-migration-v1`;
 const params = new URLSearchParams(document.location.search);
 if (params.has("config")) {
   INDEX = params.get("config");
@@ -222,7 +223,7 @@ class App extends Component {
           if (packFile.startsWith("https://") || packFile.startsWith("http://")) {
             packRes = await fetch(packFile, { cache });
           } else {
-            packRes = await fetch(`${PACKS_BASE_URL}/${packFile}?v=20260929-animated-octopus-v2`, { cache: "no-cache" });
+            packRes = await fetch(`${PACKS_BASE_URL}/${packFile}?v=20260929-gif-migration-v1`, { cache: "no-cache" });
           }
           const packData = await packRes.json();
 
@@ -498,6 +499,7 @@ const Settings = ({ app }) => html`
           <option value="black">Black</option>
         </select>
       </div>
+      ${app.state.packs[0] ? html`<${GifMigrationPanel} pack=${app.state.packs[0]} />` : null}
     </div>
   </section>
 `;
