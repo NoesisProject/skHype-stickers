@@ -9,10 +9,21 @@ After the announcement of Skype shutting down, it seemed fitting to bring back s
 
 ---
 
+## Status
+
+🎉 **Animated stickers now work in chat.**
+
+The old issue where animated stickers appeared animated in the picker but were sent as static images has been fixed.
+
+- Animated sticker sending works on **Element Desktop**
+- Animated sticker sending works on **Element Android**
+- **144 of 145** stickers have been migrated to fresh animated Matrix media (`mxc://`) URLs
+
+---
+
 ## Known Issues
 
-Animated stickers are not animated in the chat for now.  
-It's normal, I'm aware of it.  Still knitting on that one.
+- `fe0f` is the only sticker not yet migrated. Its source GIF is currently missing from the repository, so it still uses its old static Matrix media URL.
 
 ---
 
