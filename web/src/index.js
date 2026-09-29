@@ -20,8 +20,8 @@ import { html, render, Component } from "../lib/htm/preact.js";
 import { Spinner } from "./spinner.js";
 import { SearchBox } from "./search-box.js";
 import { giphyIsEnabled, GiphySearchTab, setGiphyAPIKey } from "./giphy.js";
-import * as widgetAPI from "./widget-api.js?v=20260929-admin-tools-v1";
-import { GifMigrationPanel } from "./gif-migration.js?v=20260929-admin-tools-v1";
+import * as widgetAPI from "./widget-api.js";
+import { GifMigrationPanel } from "./gif-migration.js";
 import * as frequent from "./frequently-used.js";
 
 // Le "base URL" des packs. On charge d'abord packs/index.json, puis
