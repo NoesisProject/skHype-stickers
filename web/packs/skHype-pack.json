@@ -4,19 +4,13 @@
   "stickers": [
     {
       "body": "1f419",
-      "url": "mxc://matrix.org/STHODovjUUtePTHamLmbgkwd",
+      "url": "mxc://matrix.org/YoroqYiqPQwjMpqFadwqGmXJ",
       "info": {
         "w": 240,
         "h": 240,
-        "size": 12411,
+        "size": 632098,
         "mimetype": "image/gif",
-        "thumbnail_url": "mxc://matrix.org/STHODovjUUtePTHamLmbgkwd",
-        "thumbnail_info": {
-          "w": 240,
-          "h": 240,
-          "size": 12411,
-          "mimetype": "image/gif"
-        }
+        "org.matrix.msc4230.is_animated": true
       },
       "msgtype": "m.sticker",
       "id": "sha256:d977c4a98ec21694b147dfb9babcb63f18a9ce8748818dd1109c3a71fc885691",
