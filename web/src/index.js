@@ -334,7 +334,7 @@ class App extends Component {
   }
 
   // Envoi du sticker
-  sendSticker(evt) {
+  async sendSticker(evt) {
     const id = evt.currentTarget.getAttribute("data-sticker-id");
     const sticker = this.stickersByID.get(id);
 
@@ -342,7 +342,58 @@ class App extends Component {
     frequent.add(id);
     this.updateFrequentlyUsed();
 
-    // On envoie via le widget API (Element)
+    // Cobaye GIF : 1f419 (la pieuvre).
+    // Le vieux MXC est une version minuscule/statique. Pour ce sticker seulement,
+    // on charge le vrai GIF du repo, on l'upload dans Matrix via le Widget API,
+    // puis on envoie le nouveau MXC dans le m.sticker.
+    if (sticker.body === "1f419") {
+      try {
+        let animatedMxc = localStorage.skHypeAnimated1f419Mxc;
+
+        if (!animatedMxc) {
+          const gifResponse = await fetch("sticker/skHype-pack/1f419.gif", { cache: "no-cache" });
+          if (!gifResponse.ok) {
+            throw new Error(`Unable to load 1f419.gif (HTTP ${gifResponse.status})`);
+          }
+
+          const gifBlob = await gifResponse.blob();
+          animatedMxc = await widgetAPI.uploadFile(gifBlob);
+          localStorage.skHypeAnimated1f419Mxc = animatedMxc;
+          console.info("[skHype] Animated 1f419 uploaded:", animatedMxc);
+        }
+
+        const gifResponse = await fetch("sticker/skHype-pack/1f419.gif");
+        const gifBlob = await gifResponse.blob();
+
+        const animatedSticker = {
+          body: sticker.body,
+          url: animatedMxc,
+          info: {
+            w: sticker.info?.w || 240,
+            h: sticker.info?.h || 240,
+            size: gifBlob.size,
+            mimetype: "image/gif",
+            "org.matrix.msc4230.is_animated": true,
+          },
+          msgtype: "m.sticker",
+          filename: "1f419.gif",
+          id: sticker.id,
+        };
+
+        widgetAPI.sendSticker(animatedSticker);
+        return;
+      } catch (error) {
+        console.error("[skHype] Animated 1f419 test failed:", error);
+        alert(
+          "Test GIF de la pieuvre échoué : " +
+            (error?.message || error) +
+            "\n\nL'ancienne version statique n'a PAS été envoyée."
+        );
+        return;
+      }
+    }
+
+    // Tous les autres stickers restent inchangés pendant le test.
     widgetAPI.sendSticker(sticker);
   }
 
