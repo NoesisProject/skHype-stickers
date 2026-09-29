@@ -14,6 +14,41 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 let widgetId = null
+const pendingRequests = new Map()
+
+function sendWidgetRequest(action, data, timeoutMs = 15000) {
+	if (!widgetId) {
+		return Promise.reject(new Error("Widget API not ready yet"))
+	}
+
+	const requestId = `skhype-${action}-${Date.now()}-${Math.random().toString(36).slice(2)}`
+
+	return new Promise((resolve, reject) => {
+		const timeout = setTimeout(() => {
+			pendingRequests.delete(requestId)
+			reject(new Error(`${action} timed out`))
+		}, timeoutMs)
+
+		pendingRequests.set(requestId, {
+			resolve: response => {
+				clearTimeout(timeout)
+				resolve(response)
+			},
+			reject: error => {
+				clearTimeout(timeout)
+				reject(error)
+			},
+		})
+
+		window.parent.postMessage({
+			api: "fromWidget",
+			action,
+			requestId,
+			widgetId,
+			data,
+		}, "*")
+	})
+}
 
 window.onmessage = event => {
 	if (!window.parent || !event.data) {
@@ -21,7 +56,27 @@ window.onmessage = event => {
 	}
 
 	const request = event.data
-	if (!request.requestId || !request.widgetId || !request.action || request.api !== "toWidget") {
+	if (!request.requestId || !request.widgetId || !request.action) {
+		return
+	}
+
+	// Responses to requests sent by the widget (for example file uploads).
+	if (request.api === "fromWidget" && request.response) {
+		const pending = pendingRequests.get(request.requestId)
+		if (!pending) {
+			return
+		}
+		pendingRequests.delete(request.requestId)
+
+		if (request.response.error) {
+			pending.reject(new Error(request.response.error.message || "Widget API request failed"))
+		} else {
+			pending.resolve(request.response)
+		}
+		return
+	}
+
+	if (request.api !== "toWidget") {
 		return
 	}
 
@@ -38,7 +93,12 @@ window.onmessage = event => {
 	if (request.action === "visibility") {
 		response = {}
 	} else if (request.action === "capabilities") {
-		response = { capabilities: ["m.sticker"] }
+		response = {
+			capabilities: [
+				"m.sticker",
+				"org.matrix.msc4039.upload_file",
+			],
+		}
 	} else {
 		response = { error: { message: "Action not supported" } }
 	}
@@ -74,4 +134,16 @@ export function sendSticker(content) {
 		data,
 		widgetData,
 	}, "*")
+}
+
+
+export async function uploadFile(file) {
+	const response = await sendWidgetRequest("org.matrix.msc4039.upload_file", { file }, 30000)
+	const contentUri = response?.content_uri
+
+	if (!contentUri || !contentUri.startsWith("mxc://")) {
+		throw new Error("Element did not return a Matrix content URI")
+	}
+
+	return contentUri
 }
