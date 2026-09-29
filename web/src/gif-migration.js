@@ -1,5 +1,5 @@
 import { html, Component } from "../lib/htm/preact.js";
-import * as widgetAPI from "./widget-api.js?v=20260929-gif-migration-v1";
+import * as widgetAPI from "./widget-api.js?v=20260929-gif-migration-v2";
 
 const STORAGE_KEY = "skHypeGifMigrationV1";
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -49,6 +49,7 @@ function applyResults(pack, progress) {
       ...(sticker.info || {}),
       size: result.size,
       mimetype: "image/gif",
+      "org.matrix.msc4230.is_animated": true,
     };
   }
   return output;
@@ -194,7 +195,7 @@ export class GifMigrationPanel extends Component {
       completed,
       errorCount,
       message: errorCount
-        ? `Finished with ${errorCount} failed sticker(s). Run again to retry them.`
+        ? `Finished with ${errorCount} failed sticker(s). You can export now; failed sticker(s) will keep their old MXC.`
         : "Migration complete. Your JSON is ready.",
     });
   };
@@ -242,9 +243,11 @@ export class GifMigrationPanel extends Component {
 
   render() {
     const total = this.getGifStickers().length;
-    const complete = this.state.completed >= total && this.state.errorCount === 0;
+    const processed = this.state.completed + this.state.errorCount;
+    const exportReady = processed >= total && this.state.completed > 0;
     const running = this.state.status === "running" || this.state.status === "connecting";
     const percent = total ? Math.round((this.state.completed / total) * 100) : 0;
+    const failedItems = Object.values(this.progress.errors || {});
 
     return html`
       <div class="gif-migration">
@@ -271,13 +274,26 @@ export class GifMigrationPanel extends Component {
           ? html`<p class="migration-message">${this.state.message}</p>`
           : null}
 
+        ${failedItems.length
+          ? html`
+              <div class="migration-failures">
+                <strong>Failed sticker(s):</strong>
+                <ul>
+                  ${failedItems.map(
+                    item => html`<li><code>${item.body}</code> — ${item.message}</li>`
+                  )}
+                </ul>
+              </div>
+            `
+          : null}
+
         <div class="migration-buttons">
           <button disabled=${running} onClick=${this.startMigration}>
             ${this.state.completed > 0 ? "Resume / retry migration" : "Start GIF migration"}
           </button>
           <button disabled=${!running} onClick=${this.pauseMigration}>Pause</button>
-          <button disabled=${!complete} onClick=${this.downloadJson}>Download JSON</button>
-          <button disabled=${!complete} onClick=${this.copyJson}>Copy JSON</button>
+          <button disabled=${!exportReady} onClick=${this.downloadJson}>Download JSON</button>
+          <button disabled=${!exportReady} onClick=${this.copyJson}>Copy JSON</button>
           <button disabled=${running} onClick=${this.resetMigration}>Reset migration cache</button>
         </div>
       </div>
